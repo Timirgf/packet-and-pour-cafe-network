@@ -4,7 +4,7 @@
 
 This project presents a small-business network designed and configured in Cisco Packet Tracer for a fictional coffee shop. The network separates management devices, point-of-sale systems, guest wireless clients, and network-management traffic into different VLANs. A router-on-a-stick design provides gateway services between VLANs, DHCP supplies addressing to client devices, and an extended access control list restricts guest access to internal business resources.
 
-The project demonstrates practical  skills in network planning, VLAN segmentation, 802.1Q trunking, IPv4 addressing, DHCP, wireless security, access control, device hardening, troubleshooting, and configuration verification.
+The project demonstrates practical CCNA-level skills in network planning, VLAN segmentation, 802.1Q trunking, IPv4 addressing, DHCP, wireless security, access control, device hardening, troubleshooting, and configuration verification.
 
 > **Lab note:** All usernames, passwords, and wireless keys shown in the screenshots are fictional training credentials created specifically for this Cisco Packet Tracer lab. They are included to document the complete configuration process and are not used on any real device or service.
 
@@ -383,263 +383,258 @@ When IOS asks for the destination filename, press **Enter** to accept `startup-c
 
 ## Logical Topology
 
-![Completed logical topology](<Screenshots/topology.png>)
-
 The completed topology connects an upstream cloud to the café router, the router to the central switch, and the switch to wired business devices and a wireless access point. The access point serves two guest laptops. The central switch carries VLAN traffic toward the router, while router subinterfaces act as the default gateways for the four VLANs.
+
+![Completed logical topology](<Screenshots/topology.png>)
 
 ## Implementation and Screenshot Review
 
 ### 1. Initial switch hardening
 
-![Initial switch hardening](<Screenshots/1.png>)
-
 The switch is renamed `CoffeeShop-SW`, DNS lookup is disabled, an enable secret is configured, and password encryption is enabled. These settings establish a recognizable device identity and reduce accidental DNS lookups caused by mistyped IOS commands.
+
+![Initial switch hardening](<Screenshots/1.png>)
 
 ### 2. Message-of-the-day banner
 
-![Switch MOTD banner](<Screenshots/2.png>)
-
 This screenshot shows the creation of a message-of-the-day banner warning that unauthorized access is prohibited. The first attempts generate an error because the command is entered from the wrong IOS mode. The final attempt succeeds after entering global configuration mode, demonstrating troubleshooting through command-context awareness.
+
+![Switch MOTD banner](<Screenshots/2.png>)
 
 ### 3. Console access configuration
 
-![Switch console access configuration](<Screenshots/3.png>)
-
 The switch console line is protected with authentication, and `logging synchronous` is enabled. Logging synchronization keeps system messages from interrupting commands being typed at the console.
+
+![Switch console access configuration](<Screenshots/3.png>)
 
 ### 4. Developing the physical and logical layout
 
-![Early topology development](<Screenshots/5.png>)
-
 This image captures the network during development. The router, switch, wired endpoints, printers, and wireless area are being organized into a practical small-business topology before the final configuration and testing stages.
+
+![Early topology development](<Screenshots/5.png>)
 
 ### 5. Configuring the switch trunk
 
-![Switch trunk configuration](<Screenshots/6.png>)
-
 GigabitEthernet `G0/1` is described as the link to the café router and configured as an 802.1Q trunk. VLANs 10, 20, 30, and 99 are explicitly allowed across the trunk. The screenshot also records the correction made after IOS rejected trunk mode while encapsulation remained set to automatic.
+
+![Switch trunk configuration](<Screenshots/6.png>)
 
 ### 6. Management SVI configuration
 
-![Switch management SVI](<Screenshots/7.png>)
-
 The switch creates VLAN interface 99 as its management SVI and assigns `192.168.99.2/24`. This gives the switch a dedicated management address that is separated from user and point-of-sale traffic.
+
+![Switch management SVI](<Screenshots/7.png>)
 
 ### 7. RSA keys and SSH prerequisites
 
-![SSH RSA key generation](<Screenshots/8.png>)
-
 The switch receives a local domain name and a privileged local administrator account before generating a 1024-bit RSA key pair. These are prerequisites for SSH access in the Packet Tracer lab.
+
+![SSH RSA key generation](<Screenshots/8.png>)
 
 ### 8. SSH version 2 and VTY restrictions
 
-![SSH version 2 and VTY lines](<Screenshots/9.png>)
-
 SSH version 2 is enabled, the VTY lines use the local user database, and remote access is restricted to SSH. This avoids insecure Telnet access and demonstrates safer remote-administration practices.
+
+![SSH version 2 and VTY lines](<Screenshots/9.png>)
 
 ### 9. VTY inactivity timeout
 
-![VTY inactivity timeout](<Screenshots/10 - end of witch config.png>)
-
 An execution timeout of ten minutes is applied to the VTY lines. The screenshot includes several incorrect command attempts before the command is entered in the correct line-configuration mode, documenting the troubleshooting process.
+
+![VTY inactivity timeout](<Screenshots/10 - end of witch config.png>)
 
 ### 10. VLAN and port verification
 
-![VLAN brief verification](<Screenshots/11- Vlan brief.png>)
-
 The `show vlan brief` output verifies that VLANs 10, 20, 30, and 99 exist and are active. It also shows the access-port ranges assigned to the management, POS, guest Wi-Fi, and network-management segments.
+
+![VLAN brief verification](<Screenshots/11- Vlan brief.png>)
 
 ### 11. Switch interface-status verification
 
-![Switch interface status](<Screenshots/12- .png>)
-
 The `show ip interface brief` output is used to check physical and logical interface states. Connected access ports appear up/up, while unused ports remain down. The VLAN 99 SVI has the expected management address; its protocol status should be rechecked after confirming that VLAN 99 has an active forwarding port.
+
+![Switch interface status](<Screenshots/12- .png>)
 
 ### 12. Running-configuration review
 
-![Switch running configuration](<Screenshots/13.png>)
-
 The switch running configuration is reviewed to confirm that the hostname, encrypted-password setting, interface configuration, VLAN information, and remote-management settings were entered as intended.
+
+![Switch running configuration](<Screenshots/13.png>)
 
 ### 13. Router identity and baseline security
 
-![Router baseline configuration](<Screenshots/14.png>)
-
 The router is renamed `King_Coffee_shop-RTR`, DNS lookup is disabled, an enable secret is configured, password encryption is enabled, and an unauthorized-access banner is added. This applies a consistent security baseline to the routing device.
+
+![Router baseline configuration](<Screenshots/14.png>)
 
 ### 14. Router console security
 
-![Router console security](<Screenshots/15.png>)
-
 The router console is configured to require authentication, and logging synchronization is enabled. The screenshot also demonstrates correcting a command that was initially entered from privileged EXEC mode instead of global configuration mode.
+
+![Router console security](<Screenshots/15.png>)
 
 ### 15. Upstream router interface
 
-![Router upstream interface](<Screenshots/16.png>)
-
 GigabitEthernet `G0/0` is described as the ISP-facing interface and enabled with `no shutdown`. The link transitions to the up state, confirming Layer 1 and Layer 2 connectivity to the simulated upstream cloud.
+
+![Router upstream interface](<Screenshots/16.png>)
 
 ### 16. VLAN 10 router subinterface
 
-![VLAN 10 router subinterface](<Screenshots/17.png>)
-
 Subinterface `G0/1.10` is created for the management/office VLAN. It uses 802.1Q tag 10 and the gateway address `192.168.10.1/24`. This begins the router-on-a-stick configuration.
+
+![VLAN 10 router subinterface](<Screenshots/17.png>)
 
 ### 17. VLAN 20 router subinterface
 
-![VLAN 20 router subinterface](<Screenshots/18.png>)
-
 Subinterface `G0/1.20` is assigned to the POS network using 802.1Q tag 20 and gateway address `192.168.20.1/24`. This keeps business payment devices logically separated from office and guest systems.
+
+![VLAN 20 router subinterface](<Screenshots/18.png>)
 
 ### 18. VLAN 30 router subinterface
 
-![VLAN 30 router subinterface](<Screenshots/19.png>)
-
 Subinterface `G0/1.30` is configured for guest Wi-Fi with address `192.168.30.1/24`. An initial overlapping-address entry is corrected, showing how IOS error feedback was used to fix the configuration.
+
+![VLAN 30 router subinterface](<Screenshots/19.png>)
 
 ### 19. VLAN 99 router subinterface
 
-![VLAN 99 router subinterface](<Screenshots/20.png>)
-
 Subinterface `G0/1.99` is configured with 802.1Q tag 99 and address `192.168.99.1/24`. This becomes the default gateway for the network-management VLAN.
+
+![VLAN 99 router subinterface](<Screenshots/20.png>)
 
 ### 20. Router subinterface verification
 
-![Router interface verification](<Screenshots/21.png>)
-
 The router's interface summary confirms that `G0/1.10`, `G0/1.20`, `G0/1.30`, and `G0/1.99` are configured with the correct gateway addresses and are operational. This verifies that tagged traffic can reach the appropriate Layer 3 gateway.
+
+![Router interface verification](<Screenshots/21.png>)
 
 ### 21. DHCP address exclusions
 
-![DHCP exclusions](<Screenshots/22.png>)
-
 The first twenty addresses in VLANs 10, 20, and 30 are excluded from dynamic assignment. Reserving these ranges prevents DHCP from assigning addresses intended for gateways, printers, access points, or other infrastructure.
+
+![DHCP exclusions](<Screenshots/22.png>)
 
 ### 22. Management DHCP pool
 
-![Management DHCP pool](<Screenshots/23.png>)
-
 The management/office DHCP pool is created for `192.168.10.0/24` with `192.168.10.1` as its default gateway. The screenshot shows the pool-building process and the correction of an initially mistyped DHCP command.
+
+![Management DHCP pool](<Screenshots/23.png>)
 
 ### 23. POS and guest DHCP pools
 
-![POS and guest DHCP pools](<Screenshots/24.png>)
-
 Separate DHCP pools are configured for the POS and guest networks. Each pool uses its VLAN-specific network and default gateway, allowing clients to receive addressing appropriate to their security zone.
+
+![POS and guest DHCP pools](<Screenshots/24.png>)
 
 ### 24. DHCP pool verification
 
-![DHCP pool verification](<Screenshots/25 dhcp pool.png>)
-
 DHCP pool output confirms the address ranges and exclusions for the three client networks. This provides a control-plane check before validating leases from the endpoint side.
+
+![DHCP pool verification](<Screenshots/25 dhcp pool.png>)
 
 ### 25. Guest access-control policy
 
-![Guest ACL creation](<Screenshots/26 Assess control.png>)
-
 An extended ACL named `GUEST_RESTRICTIONS` is created for the guest subnet. Its intent is to allow DHCP, block guest traffic to the management, POS, and network-management networks, and permit other guest traffic. Before publication, capture `show access-lists GUEST_RESTRICTIONS` to verify the final wildcard masks, rule order, and hit counters.
+
+![Guest ACL creation](<Screenshots/26 Assess control.png>)
 
 ### 26. Applying the guest ACL
 
-![Applying the guest ACL](<Screenshots/27 ACL.png>)
-
 The guest restriction ACL is applied inbound on router subinterface `G0/1.30`. Placing the extended ACL near the guest source prevents unauthorized traffic from traveling farther into the internal network.
+
+![Applying the guest ACL](<Screenshots/27 ACL.png>)
 
 ### 27. Saving the router configuration
 
-![Saving the router configuration](<Screenshots/28 saving Config.png>)
-
 The running configuration is copied to startup configuration. This ensures that the router retains the completed lab configuration after a reload.
+
+![Saving the router configuration](<Screenshots/28 saving Config.png>)
 
 ### 28. Access-point wireless security
 
-![Access point WPA2 configuration](<Screenshots/Access point password config.png>)
-
 The access point is configured to use WPA2-PSK authentication with AES encryption. This protects the guest wireless network from unauthenticated association in the lab.
+
+![Access point WPA2 configuration](<Screenshots/Access point password config.png>)
 
 ### 29. Guest DHCP validation
 
-![Guest DHCP validation](<Screenshots/DHCP CHECK to pc.png>)
-
 The wireless laptop reports a successful DHCP request on its wireless interface. This validates the path from the wireless client through the access point and switch to the router's guest DHCP service.
+
+![Guest DHCP validation](<Screenshots/DHCP CHECK to pc.png>)
 
 ### 30. Guest SSID configuration
 
-![Guest SSID configuration](<Screenshots/SSID Renamee.png>)
-
 The access point SSID is renamed `coffeeshop-guest` and paired with WPA2-PSK/AES security. A descriptive SSID helps users identify the intended guest service while the VLAN and ACL enforce separation behind it.
+
+![Guest SSID configuration](<Screenshots/SSID Renamee.png>)
 
 ### 31. Guest gateway reachability and internal blocking
 
-![Guest ACL test](<Screenshots/acl check on guest pc.png>)
-
 The guest workstation successfully reaches its own gateway at `192.168.30.1`, proving local VLAN and gateway connectivity. Attempts to reach an internal management address fail, which supports the intended guest-isolation policy.
+
+![Guest ACL test](<Screenshots/acl check on guest pc.png>)
 
 ### 32. Guest-to-POS blocking
 
-![Guest to POS ACL test](<Screenshots/acl check on guest pc ii.png>)
-
 The guest workstation attempts to reach a POS address at `192.168.20.21` and receives destination-unreachable responses from the guest gateway. This provides endpoint-level evidence that guest traffic cannot access the payment network.
+
+![Guest to POS ACL test](<Screenshots/acl check on guest pc ii.png>)
 
 ### 33. Discovering the secured wireless network
 
-![Wireless network discovery](<Screenshots/connect to access point from laptop i.png>)
-
 The laptop detects `coffeeshop-guest` as a WPA2-PSK wireless network. This verifies SSID broadcast, wireless coverage, and recognition of the configured security type.
+
+![Wireless network discovery](<Screenshots/connect to access point from laptop i.png>)
 
 ### 34. Entering the wireless pre-shared key
 
-![Wireless authentication](<Screenshots/connect to access pont from laptop.png>)
-
 The laptop is prompted for the WPA2 pre-shared key before joining the network. This demonstrates that wireless security is being enforced rather than allowing an open guest association.
 
-### 35. Wireless connection workflow overview
+![Wireless authentication](<Screenshots/connect to access pont from laptop.png>)
 
-![Wireless connection workflow overview](<Screenshots/connection of laptop to access point overview.png>)
-
-This image provides a wider view of the Packet Tracer wireless connection workflow and the guest laptop placement within the topology. For a recruiter-facing repository, this image is less focused than the dedicated Packet Tracer captures and can be kept as optional supporting evidence.
-
-### 36. Wireless laptop hardware configuration
-
-![Wireless laptop configuration](<Screenshots/laptop config.png>)
+### 35. Wireless laptop hardware configuration
 
 The laptop configuration shows the endpoint prepared for wireless connectivity. This supports the later screenshots that demonstrate SSID discovery, authentication, and DHCP assignment.
 
-### 37. Receipt-printer gateway and DNS settings
+![Wireless laptop configuration](<Screenshots/laptop config.png>)
 
-![Receipt printer gateway configuration](<Screenshots/pos printer static ip config.png>)
+### 36. Receipt-printer gateway and DNS settings
 
 The receipt printer is assigned the POS gateway `192.168.20.1` and a DNS server. A fixed network configuration is appropriate for a business printer because terminals and administrators need a predictable destination address.
 
-### 38. Receipt-printer static IPv4 address
+![Receipt printer gateway configuration](<Screenshots/pos printer static ip config.png>)
 
-![Receipt printer static IPv4 address](<Screenshots/pos printer static ip config ii.png>)
+### 37. Receipt-printer static IPv4 address
 
 The receipt printer uses static address `192.168.20.10/24`. The address falls within the DHCP-excluded infrastructure range, preventing a duplicate assignment to a dynamic client.
 
-### 39. Office-printer gateway and DNS settings
+![Receipt printer static IPv4 address](<Screenshots/pos printer static ip config ii.png>)
 
-![Office printer gateway configuration](<Screenshots/printer static ip config for management.png>)
+### 38. Office-printer gateway and DNS settings
 
 The office printer is assigned management gateway `192.168.10.1` and a DNS server. This places the device in the management/office network rather than the guest or payment segment.
 
-### 40. Office-printer static IPv4 address
+![Office printer gateway configuration](<Screenshots/printer static ip config for management.png>)
 
-![Office printer static IPv4 address](<Screenshots/printer static ip config for management ii.png>)
+### 39. Office-printer static IPv4 address
 
 The office printer uses static address `192.168.10.10/24`. Like the receipt printer, it is placed inside the excluded address range to protect the static assignment from DHCP conflicts.
 
-### 41. Connectivity troubleshooting and validation
+![Office printer static IPv4 address](<Screenshots/printer static ip config for management ii.png>)
 
-![Connectivity testing](<Screenshots/test connectivity.png>)
+### 40. Connectivity troubleshooting and validation
 
 The command prompt records initial timed-out tests followed by successful replies from `192.168.10.1`. The first tests were confusing because the endpoint was still using a previous static IPv4 configuration. After changing the endpoint to DHCP and confirming that it received the correct address, mask, and gateway for its VLAN, the gateway ping succeeded.
 
-### 42. Final topology review
+![Connectivity testing](<Screenshots/test connectivity.png>)
+
+### 41. Final topology review
+
+The final logical view shows the upstream cloud, router, central switch, wireless access point, guest laptops, management workstation and printer, POS terminal, and receipt printer. It gives recruiters a quick visual summary of the completed design and the business purpose of each endpoint.
 
 ![Final network topology](<Screenshots/topology.png>)
 
-The final logical view shows the upstream cloud, router, central switch, wireless access point, guest laptops, management workstation and printer, POS terminal, and receipt printer. It gives recruiters a quick visual summary of the completed design and the business purpose of each endpoint.
 
 ## Verification Summary
 
