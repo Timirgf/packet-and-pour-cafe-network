@@ -782,26 +782,6 @@ The available screenshots support the switching, VLAN, DHCP, wireless, ACL, and 
 7. Add the Packet Tracer `.pkt` file and router/switch configuration exports to the repository.
 8. Rename screenshots with short, consistent lowercase filenames before the final GitHub push.
 
-## Recommended Repository Structure
-
-```text
-packet-and-pour-cafe-network/
-├── README.md
-├── packet-and-pour-cafe.pkt
-├── configs/
-│   ├── router-running-config.txt
-│   └── switch-running-config.txt
-└── screenshots/
-    ├── 01-final-topology.png
-    ├── 02-vlan-verification.png
-    ├── 03-trunk-configuration.png
-    ├── 04-router-subinterfaces.png
-    ├── 05-dhcp-pools.png
-    ├── 06-guest-wifi-security.png
-    ├── 07-guest-dhcp-success.png
-    ├── 08-guest-management-blocked.png
-    └── 09-guest-pos-blocked.png
-```
 
 ## Key Takeaways
 
